@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -18,16 +19,31 @@ public class UserService {
 
     private BCryptPasswordEncoder encoder=new BCryptPasswordEncoder(10);
 
-    public User createUser(User user){
+    public UserDto createUser(User user) {
         user.setPassword(encoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        return convertToDTO(savedUser);
     }
 
-    public Optional<User> getUserById(Integer id){
-        return userRepository.findById(id);
+    public Optional<UserDto> getUserById(Integer id){
+        return userRepository.findById(id).map(this::convertToDTO);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserDto> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    public boolean authenticateUser(String username, String password) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return encoder.matches(password, user.getPassword());
+        }
+        return false;
+    }
+
+    private UserDto convertToDTO(User user) {
+        return new UserDto(user.getUsername(), user.getEmail());
     }
 }

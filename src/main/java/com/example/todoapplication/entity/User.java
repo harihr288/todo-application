@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,9 +26,4 @@ public class User {
     @OneToMany(targetEntity = Todo.class,cascade = CascadeType.ALL)
     private List<Todo> todos=new ArrayList<>();
 
-    public User(Integer userId, String username, String password, String email) {
-    }
-
-    public User(String username, String password, String email) {
-    }
 }

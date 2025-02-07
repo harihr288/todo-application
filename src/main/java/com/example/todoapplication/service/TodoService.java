@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TodoService {
@@ -22,32 +23,46 @@ public class TodoService {
     @Autowired
     private UserRepository userRepository;
 
-    public Todo createTodo(Integer userId,Todo todo){
-        User user=userRepository.findById(userId).orElseThrow(()->new RuntimeException("User Not Found"));
+    public TodoDto createTodo(Integer userId, TodoDto todoDto) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User Not Found"));
+        Todo todo = new Todo();
+        todo.setTitle(todoDto.getTitle());
+        todo.setDescription(todoDto.getDescription());
+        todo.setCompleted(todoDto.isCompleted());
         todo.setUser(user);
-        return todoRepository.save(todo);
+
+        Todo savedTodo = todoRepository.save(todo);
+        return new TodoDto(savedTodo.getTitle(), savedTodo.getDescription(), savedTodo.isCompleted());
     }
 
-    public Page<Todo> getAllTodos(Pageable pageable){
-        return todoRepository.findAll(pageable);
+    public Page<TodoDto> getAllTodos(Pageable pageable) {
+        Page<Todo> todos = todoRepository.findAll(pageable);
+
+        return todos.map(todo -> new TodoDto(todo.getTitle(), todo.getDescription(), todo.isCompleted()));
     }
 
-    public List<Todo> getTodoByUserId(Integer userId){
-        User user=userRepository.findById(userId).orElseThrow(()->new RuntimeException("User Not Found"));
-        return todoRepository.findByUser(user);
+    public List<TodoDto> getTodoByUserId(Integer userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User Not Found"));
+        List<Todo> todos = todoRepository.findByUser(user);
+
+        return todos.stream()
+                .map(todo -> new TodoDto(todo.getTitle(), todo.getDescription(), todo.isCompleted()))
+                .collect(Collectors.toList());
     }
 
-    public Optional<Todo> updateTodo(Integer todoId, TodoDto todoDto) {
+    public Optional<TodoDto> updateTodo(Integer todoId, TodoDto todoDto) {
         return todoRepository.findById(todoId).map(todo -> {
             todo.setTitle(todoDto.getTitle());
             todo.setDescription(todoDto.getDescription());
             todo.setCompleted(todoDto.isCompleted());
-            return todoRepository.save(todo);
+
+            Todo updatedTodo = todoRepository.save(todo);
+            return new TodoDto(updatedTodo.getTitle(), updatedTodo.getDescription(), updatedTodo.isCompleted());
         });
     }
 
     public boolean deleteTodo(Integer todoId) {
-        if(todoRepository.existsById(todoId)){
+        if (todoRepository.existsById(todoId)) {
             todoRepository.deleteById(todoId);
             return true;
         }

@@ -1,10 +1,10 @@
 package com.example.todoapplication.serviceTest;
 
+import com.example.todoapplication.dto.TodoDto;
 import com.example.todoapplication.entity.Todo;
 import com.example.todoapplication.entity.User;
 import com.example.todoapplication.repository.TodoRepository;
 import com.example.todoapplication.repository.UserRepository;
-import com.example.todoapplication.dto.TodoDto;
 import com.example.todoapplication.service.TodoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,9 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class TodoServiceTest {
+class TodoServiceTest {
 
     @Mock
     private TodoRepository todoRepository;
@@ -60,41 +57,41 @@ public class TodoServiceTest {
     }
 
     @Test
-    public void createTodoTest() {
+     void createTodoTest() {
         when(userRepository.findById(1)).thenReturn(Optional.of(testUser));
         when(todoRepository.save(any(Todo.class))).thenReturn(testTodo);
 
-        Todo result = todoService.createTodo(1, testTodo);
+        TodoDto result = todoService.createTodo(1, testTodoDto);
 
         assertNotNull(result);
-        assertEquals(testTodo.getId(), result.getId());
+        assertEquals(testTodo.getTitle(), result.getTitle());
     }
 
     @Test
-    public void getTodoByUserIdTest() {
+     void getTodoByUserIdTest() {
         when(userRepository.findById(1)).thenReturn(Optional.of(testUser));
         when(todoRepository.findByUser(testUser)).thenReturn(Arrays.asList(testTodo));
 
-        List<Todo> result = todoService.getTodoByUserId(1);
+        List<TodoDto> result = todoService.getTodoByUserId(1);
 
         assertNotNull(result);
         assertEquals(1, result.size());
     }
 
     @Test
-    public void updateTodoTest() {
+     void updateTodoTest() {
         Todo existingTodo = testTodo;
         when(todoRepository.findById(1)).thenReturn(Optional.of(existingTodo));
         when(todoRepository.save(any(Todo.class))).thenReturn(existingTodo);
 
-        Optional<Todo> result = todoService.updateTodo(1, testTodoDto);
+        Optional<TodoDto> result = todoService.updateTodo(1, testTodoDto);
 
         assertTrue(result.isPresent());
         assertEquals(testTodoDto.getTitle(), result.get().getTitle());
     }
 
     @Test
-    public void deleteTodoTest() {
+     void deleteTodoTest() {
         when(todoRepository.existsById(1)).thenReturn(true);
         doNothing().when(todoRepository).deleteById(1);
 

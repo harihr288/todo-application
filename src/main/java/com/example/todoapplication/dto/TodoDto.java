@@ -8,14 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TodoDto {
-    private Integer id;
     private String title;
     private String description;
     private boolean completed;
 
-    public TodoDto(String title, String description, boolean completed) {
-        this.title = title;
-        this.description = description;
-        this.completed = completed;
+    public TodoDto(int i, String title, String description, boolean completed) {
     }
+
 }

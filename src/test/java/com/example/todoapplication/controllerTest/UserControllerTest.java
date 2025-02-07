@@ -1,6 +1,6 @@
 package com.example.todoapplication.controllerTest;
 
-
+import com.example.todoapplication.dto.UserDto;
 import com.example.todoapplication.entity.User;
 import com.example.todoapplication.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UserControllerTest {
+class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -39,58 +39,53 @@ public class UserControllerTest {
     @MockitoBean
     private UserService userService;
 
-    private User testUser;
+    private UserDto testUserDTO;
 
     @BeforeEach
     public void setUp() {
-        testUser = new User();
-        testUser.setId(1);
-        testUser.setUsername("hari");
-        testUser.setPassword("hari123");
-        testUser.setEmail("hari@gmail.com");
+        testUserDTO = new UserDto();
+        testUserDTO.setUsername("hari");
+        testUserDTO.setEmail("hari@gmail.com");
     }
 
     @Test
-    public void getUserByIdTest() throws Exception {
-        when(userService.getUserById(1)).thenReturn(Optional.of(testUser));
+    void getUserByIdTest() throws Exception {
+        when(userService.getUserById(1)).thenReturn(Optional.of(testUserDTO));
 
         mockMvc.perform(get("/user/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(testUser.getId()))
-                .andExpect(jsonPath("$.username").value(testUser.getUsername()))
-                .andExpect(jsonPath("$.email").value(testUser.getEmail()));
+                .andExpect(jsonPath("$.username").value(testUserDTO.getUsername()))
+                .andExpect(jsonPath("$.email").value(testUserDTO.getEmail()));
 
         verify(userService).getUserById(1);
     }
+
     @Test
     void createUserTest() throws Exception {
-        when(userService.createUser(any(User.class))).thenReturn(testUser);
+        when(userService.createUser(any(User.class))).thenReturn(testUserDTO);
 
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testUser)))
+                        .content(objectMapper.writeValueAsString(testUserDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").value(testUser.getUsername()))
-                .andExpect(jsonPath("$.email").value(testUser.getEmail()))
-                .andExpect(jsonPath("$.password").value(testUser.getPassword()));
+                .andExpect(jsonPath("$.username").value(testUserDTO.getUsername()))
+                .andExpect(jsonPath("$.email").value(testUserDTO.getEmail()));
 
         verify(userService).createUser(any(User.class));
     }
 
     @Test
     void getAllUsersTest() throws Exception {
-        List<User> users = Arrays.asList(testUser);
+        List<UserDto> users = Arrays.asList(testUserDTO);
         when(userService.getAllUsers()).thenReturn(users);
 
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id").value(testUser.getId()))
-                .andExpect(jsonPath("$[0].username").value(testUser.getUsername()))
-                .andExpect(jsonPath("$[0].email").value(testUser.getEmail()));
+                .andExpect(jsonPath("$[0].username").value(testUserDTO.getUsername()))
+                .andExpect(jsonPath("$[0].email").value(testUserDTO.getEmail()));
 
         verify(userService).getAllUsers();
     }
 
 }
-
