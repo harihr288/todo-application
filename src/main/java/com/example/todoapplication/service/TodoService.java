@@ -17,11 +17,14 @@ import java.util.stream.Collectors;
 @Service
 public class TodoService {
 
-    @Autowired
-    private TodoRepository todoRepository;
+    private final TodoRepository todoRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    TodoService(TodoRepository todoRepository,UserRepository userRepository){
+        this.todoRepository=todoRepository;
+        this.userRepository=userRepository;
+    }
 
     public TodoDto createTodo(Integer userId, TodoDto todoDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User Not Found"));

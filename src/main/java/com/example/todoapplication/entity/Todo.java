@@ -15,13 +15,11 @@ public class Todo {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String title;
-    @Size(max = 100,message = "Description maximum size should be 100")
+    @Size(max = 100, message = "Description maximum size should be 100")
     private String description;
     private boolean completed;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Todo(int id, String title, String description, boolean completed) {
-    }
 }

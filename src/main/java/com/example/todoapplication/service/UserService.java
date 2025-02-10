@@ -14,10 +14,15 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
 
-    private BCryptPasswordEncoder encoder=new BCryptPasswordEncoder(10);
+    private final UserRepository userRepository;
+
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
 
     public UserDto createUser(User user) {
         user.setPassword(encoder.encode(user.getPassword()));
@@ -25,7 +30,7 @@ public class UserService {
         return convertToDTO(savedUser);
     }
 
-    public Optional<UserDto> getUserById(Integer id){
+    public Optional<UserDto> getUserById(Integer id) {
         return userRepository.findById(id).map(this::convertToDTO);
     }
 

@@ -2,6 +2,7 @@ package com.example.todoapplication.controller;
 
 import com.example.todoapplication.dto.TodoDto;
 import com.example.todoapplication.service.TodoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,11 +14,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 public class TodoController {
 
+
+    private final TodoService todoService;
+
     @Autowired
-    private TodoService todoService;
+    public TodoController(TodoService todoService) {
+        this.todoService = todoService;
+    }
 
     @PostMapping("/todo/{userId}")
     public ResponseEntity<TodoDto> createTodo(@PathVariable Integer userId, @RequestBody TodoDto todoDto) {
@@ -30,9 +37,8 @@ public class TodoController {
                                      @RequestParam(defaultValue = "2") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<TodoDto> todoPage = todoService.getAllTodos(pageable);
-        Page<TodoDto> todoDtoPage = todoPage.map(todo -> new TodoDto(todo.getTitle(), todo.getDescription(), todo.isCompleted()));
-
-        return todoDtoPage;
+        log.info("page: {}, {}", todoPage.getTotalPages(), todoPage.getTotalElements());
+        return todoPage.map(todo -> new TodoDto(todo.getTitle(), todo.getDescription(), todo.isCompleted()));
     }
 
     @GetMapping("/todo/{userId}")
