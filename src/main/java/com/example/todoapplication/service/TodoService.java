@@ -21,9 +21,9 @@ public class TodoService {
     private final UserRepository userRepository;
 
     @Autowired
-    TodoService(TodoRepository todoRepository,UserRepository userRepository){
-        this.todoRepository=todoRepository;
-        this.userRepository=userRepository;
+    TodoService(TodoRepository todoRepository, UserRepository userRepository) {
+        this.todoRepository = todoRepository;
+        this.userRepository = userRepository;
     }
 
     public TodoDto createTodo(Integer userId, TodoDto todoDto) {

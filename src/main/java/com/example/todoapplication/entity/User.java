@@ -23,7 +23,7 @@ public class User {
     @Email
     private String email;
 
-    @OneToMany(targetEntity = Todo.class,cascade = CascadeType.ALL)
-    private List<Todo> todos=new ArrayList<>();
+    @OneToMany(targetEntity = Todo.class, cascade = CascadeType.ALL)
+    private List<Todo> todos = new ArrayList<>();
 
 }

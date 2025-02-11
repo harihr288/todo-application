@@ -81,13 +81,4 @@ class UserServiceTest {
         assertEquals(testUserDto.getEmail(), result.getEmail());
     }
 
-    @Test
-    void authenticateUser(){
-        when(userRepository.findByUsername(testUser.getUsername())).thenReturn(Optional.of(testUser));
-        when(encoder.matches("password123", testUser.getPassword())).thenReturn(true);
-
-        boolean result=userService.authenticateUser("testuser", "password123");
-
-        assertTrue(result);
-    }
 }

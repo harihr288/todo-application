@@ -18,13 +18,13 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/user")
-    public ResponseEntity<UserDto> createUser(@RequestBody User user){
-        UserDto savedUser=userService.createUser(user);
+    public ResponseEntity<UserDto> createUser(@RequestBody User user) {
+        UserDto savedUser = userService.createUser(user);
         return ResponseEntity.ok(savedUser);
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<UserDto> getUserByID(@PathVariable Integer id){
+    public ResponseEntity<UserDto> getUserByID(@PathVariable Integer id) {
         return userService.getUserById(id).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         boolean isAuthenticated = userService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
         if (isAuthenticated) {
             return ResponseEntity.ok("Login successful");
