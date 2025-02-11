@@ -1,8 +1,8 @@
 package com.example.todoapplication.serviceTest;
 
+import com.example.todoapplication.dto.UserDto;
 import com.example.todoapplication.entity.User;
 import com.example.todoapplication.repository.UserRepository;
-import com.example.todoapplication.dto.UserDto;
 import com.example.todoapplication.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,14 +60,14 @@ class UserServiceTest {
 
     @Test
     void getAllUsersTest() {
-        List<User> userList = Arrays.asList(testUser);
+        List<User> userList = Collections.singletonList(testUser);
         when(userRepository.findAll()).thenReturn(userList);
 
         List<UserDto> result = userService.getAllUsers();
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(testUser.getUsername(), result.get(0).getUsername());
+        assertEquals(testUser.getUsername(), result.getFirst().getUsername());
     }
 
     @Test
@@ -80,5 +80,4 @@ class UserServiceTest {
         assertEquals(testUserDto.getUsername(), result.getUsername());
         assertEquals(testUserDto.getEmail(), result.getEmail());
     }
-
 }

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class TodoService {
@@ -49,8 +48,7 @@ public class TodoService {
         List<Todo> todos = todoRepository.findByUser(user);
 
         return todos.stream()
-                .map(todo -> new TodoDto(todo.getTitle(), todo.getDescription(), todo.isCompleted()))
-                .collect(Collectors.toList());
+                .map(todo -> new TodoDto(todo.getTitle(), todo.getDescription(), todo.isCompleted())).toList();
     }
 
     public Optional<TodoDto> updateTodo(Integer todoId, TodoDto todoDto) {
